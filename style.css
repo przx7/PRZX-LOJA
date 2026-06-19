@@ -195,3 +195,116 @@ header {
 .btn-buy:hover {
     background: linear-gradient(135deg, #ff1a1a 0%, #ff4d4d 100%);
 }
+
+/* ==========================================
+   ESTILIZAÇÃO DO RODAPÉ (FOOTER) PREMIUM
+   ========================================== */
+footer {
+    width: 100%;
+    background-color: #0e0e11;
+    padding: 40px 20px 20px 20px;
+    box-sizing: border-box;
+    margin-top: 50px;
+    border-top: 1px solid #1c1c24;
+    text-align: center;
+}
+
+.footer-logo {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #ff1a1a; /* Mantendo o padrão Red do seu tema */
+    letter-spacing: 1.5px;
+}
+
+.footer-tagline {
+    font-size: 0.85rem;
+    color: #8a8a93;
+    margin: 12px auto 30px auto;
+    max-width: 300px;
+    line-height: 1.4;
+}
+
+.footer-links h4 {
+    font-size: 0.95rem;
+    color: #ffffff;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.footer-links a {
+    display: block;
+    color: #8a8a93;
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #ff1a1a;
+}
+
+.footer-socials {
+    margin-top: 30px;
+}
+
+.footer-socials p {
+    font-size: 0.85rem;
+    color: #ffffff;
+    margin-bottom: 15px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Botões Redondos das Redes Sociais semelhantes ao print */
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background-color: #1a1a1f;
+    border: 1px solid #2d2d35;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.social-btn:hover {
+    border-color: #ff1a1a;
+    background-color: #ff1a1a;
+    box-shadow: 0 0 10px rgba(255, 26, 26, 0.4);
+    transform: translateY(-2px);
+}
+
+.footer-divider {
+    height: 1px;
+    border: none;
+    background-color: #1c1c24;
+    margin: 35px 0 20px 0;
+}
+
+.footer-copyright {
+    font-size: 0.75rem;
+    color: #636366;
+    line-height: 1.5;
+}
+
+.footer-copyright p {
+    margin: 4px 0;
+}
+
+.powered-by {
+    margin-top: 8px !important;
+}
+
+.powered-by span {
+    color: #ffffff;
+    font-weight: 600;
+}
