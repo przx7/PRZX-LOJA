@@ -103,11 +103,20 @@
             font-size: 1.1rem;
             font-weight: 700;
             color: #ffffff;
-            margin-top: 35px;
+            margin-top: 25px;
             margin-bottom: 15px;
             padding-left: 8px;
             border-left: 3px solid #ff1a1a;
             letter-spacing: 0.5px;
+        }
+
+        /* Linha Divisória Customizada (LINE) */
+        .line-separator {
+            height: 1px;
+            width: 100%;
+            background: linear-gradient(90deg, rgba(255,26,26,0) 0%, rgba(255,26,26,0.6) 50%, rgba(255,26,26,0) 100%);
+            margin: 35px 0;
+            border: none;
         }
 
         /* Card do Produto com Upgrade de Design */
@@ -116,7 +125,7 @@
             border: 1px solid #1c1c24;
             border-radius: 14px;
             overflow: hidden;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.6);
             transition: all 0.25s ease-in-out;
         }
@@ -242,6 +251,8 @@
                 <a href="#" class="btn-buy">Botão de Ação</a>
             </div>
         </div>
+
+        <hr class="line-separator">
 
         <div class="category-title">Nome da Categoria 2</div>
 
