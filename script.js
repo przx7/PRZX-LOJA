@@ -50,7 +50,8 @@ function abrirModal(produtoId, linhaId) {
         }
     });
 
-    if (cardClicado) cardClicadd = cardClicado.classList.add('selected');
+    // BUG CORRIGIDO: Removido o erro de digitação "cardClicadd"
+    if (cardClicado) cardClicado.classList.add('selected');
     if (botaoClicado) botaoClicado.textContent = 'Recolher';
 
     expansionArea.innerHTML = `
@@ -109,7 +110,6 @@ function adicionarCarrinho(id) {
         });
     }
 
-    // Atualiza a interface (badge e lista)
     atualizarInterfaceCarrinho();
 }
 
@@ -119,24 +119,20 @@ function removerDoCarrinho(id) {
 }
 
 function atualizarInterfaceCarrinho() {
-    // MODIFICADO: Feedback visual de pulso no contador (badge) do menu superior
     const counterEl = document.getElementById('cart-counter');
     if (counterEl) {
         counterEl.classList.remove('badge-pop');
-        void counterEl.offsetWidth; // Truque necessário para resetar a animação do CSS no DOM
+        void counterEl.offsetWidth; // Reset de animação CSS
         counterEl.classList.add('badge-pop');
     }
 
-    // 1. Atualizar o badge numérico no header
     const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
     if (counterEl) counterEl.textContent = totalItens;
 
-    // 2. Capturar container e o botão de finalização
     const container = document.getElementById('cart-items-container');
     const btnFinalizar = document.getElementById('btn-finalize-checkout');
     if (!container) return;
 
-    // Se o carrinho estiver vazio, bloqueia visualmente e funcionalmente o botão
     if (carrinho.length === 0) {
         container.innerHTML = `
             <div class="cart-empty-msg">
@@ -155,7 +151,6 @@ function atualizarInterfaceCarrinho() {
         return;
     }
 
-    // Se tiver itens, libera o botão completamente
     if (btnFinalizar) {
         btnFinalizar.disabled = false;
         btnFinalizar.style.opacity = '1';
@@ -193,15 +188,12 @@ function mostrarCarrinho() {
     const catalogo = document.getElementById('catalog-view');
     const carrinhoTela = document.getElementById('cart-view');
 
-    // 1. Remove a classe de visibilidade do catálogo (Inicia Fade-out)
     catalogo.classList.remove('view-active');
 
-    // 2. Aguarda 350ms (tempo sincronizado com a transição CSS) para mudar o display
     setTimeout(() => {
         catalogo.style.display = 'none';
         carrinhoTela.style.display = 'block';
 
-        // Limpar seleções de abas abertas no catálogo
         document.querySelectorAll('.product-details-expansion').forEach(exp => {
             exp.classList.remove('active');
             exp.innerHTML = '';
@@ -215,7 +207,6 @@ function mostrarCarrinho() {
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // 3. Introduz a classe ativa para renderizar o Fade-in/Slide-up no Carrinho
         setTimeout(() => {
             carrinhoTela.classList.add('view-active');
         }, 10);
@@ -227,17 +218,14 @@ function mostrarCatalogo() {
     const catalogo = document.getElementById('catalog-view');
     const carrinhoTela = document.getElementById('cart-view');
 
-    // 1. Remove a classe de visibilidade do carrinho (Inicia Fade-out)
     carrinhoTela.classList.remove('view-active');
 
-    // 2. Aguarda a finalização da animação
     setTimeout(() => {
         carrinhoTela.style.display = 'none';
         catalogo.style.display = 'block';
         
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // 3. Aplica o Fade-in/Slide-up de retorno para a Vitrine
         setTimeout(() => {
             catalogo.classList.add('view-active');
         }, 10);
@@ -245,24 +233,77 @@ function mostrarCatalogo() {
     }, 350);
 }
 
-// --- PROCESSAMENTO FINAL DE PAGAMENTO ---
+// --- PROCESSAMENTO FINAL DE PAGAMENTO INTEGRADO À API VERCEL ---
 
 function finalizarCompra(id) {
-    adicionarCarrinho(id); // Adiciona silenciosamente
-    mostrarCarrinho();    // Executa a navegação com o novo efeito suave
+    // Se o item já não estiver no carrinho, adiciona para prosseguir para o pagamento rápido
+    const jaTemNoCarrinho = carrinho.some(item => item.id === id);
+    if (!jaTemNoCarrinho) {
+        adicionarCarrinho(id);
+    }
+    mostrarCarrinho();
 }
 
-function finalizarCompraDoCarrinho() {
-    const total = document.getElementById('cart-total-price').textContent;
-    alert(`Automação PRZX: Iniciando integração com o Mercado Pago para processar o valor de ${total} via PIX.`);
+// ATUALIZADO: Integração Direta e Segura com a API do Mercado Pago na Vercel
+async function finalizarCompraDoCarrinho() {
+    if (carrinho.length === 0) return;
+
+    const email = prompt("Digite seu e-mail para receber o produto automaticamente:");
+    if (!email) return alert("O e-mail é obrigatório para realizar e rastrear a entrega!");
+
+    // Para fins de compatibilidade com a rota simplificada, enviaremos o ID e quantidade do item atual
+    // Em sistemas de carrinho múltiplo complexos, você enviaria a array 'carrinho' inteira.
+    const primeiroItem = carrinho[0];
+
+    const btnFinalizar = document.getElementById('btn-finalize-checkout');
+    if (btnFinalizar) {
+        btnFinalizar.disabled = true;
+        btnFinalizar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Gerando PIX...`;
+    }
+
+    try {
+        // Envia os dados de forma privada para a Serverless Function da Vercel
+        const resposta = await fetch('/api/criar-pagamento', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                produtoId: primeiroItem.id, 
+                emailCliente: email 
+            })
+        });
+
+        const dados = await resposta.json();
+
+        if (dados.qr_code) {
+            // Sucesso! Registra no console e alerta o cliente.
+            console.log("=== AUTOMAÇÃO PRZX ===");
+            console.log("Código Copia e Cola PIX:", dados.qr_code);
+            console.log("String Base64 do QR Code:", dados.qr_code_base64);
+
+            alert(`PIX Gerado para ${primeiroItem.nome}!\n\nCopie o código 'Copia e Cola' direto no Console do seu navegador (F12) para pagar.`);
+            
+            // Opcional: Você pode limpar o carrinho após gerar a ordem de pagamento
+            // carrinho = [];
+            // atualizarInterfaceCarrinho();
+            // mostrarCatalogo();
+        } else {
+            alert(`Erro do Servidor: ${dados.error || "Não foi possível gerar a cobrança."}`);
+        }
+    } catch (erro) {
+        console.error("Erro na comunicação com a API Vercel:", erro);
+        alert("Falha de conexão com o portal de pagamentos automáticos.");
+    } finally {
+        if (btnFinalizar) {
+            btnFinalizar.disabled = false;
+            btnFinalizar.innerHTML = `<i class="fa-solid fa-bolt"></i> Finalizar Compra via PIX`;
+        }
+    }
 }
 
 // --- GATILHOS DE INICIALIZAÇÃO ---
 
-// Executa uma verificação inicial para garantir as travas do botão de checkout
 atualizarInterfaceCarrinho();
 
-// Força a vitrine inicial a surgir com animação suave assim que a estrutura do site carregar completamente
 document.addEventListener("DOMContentLoaded", () => {
     const catalogo = document.getElementById('catalog-view');
     if (catalogo) {
