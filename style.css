@@ -1,0 +1,210 @@
+/* Configurações Gerais - Tema Premium Dark-Red */
+body {
+    background: radial-gradient(circle at top, #140d0d 0%, #070708 100%);
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Barra de Anúncio Superior Refinada */
+.top-announcement {
+    width: 100%;
+    background-color: #800c0c;
+    color: #ffffff;
+    text-align: center;
+    padding: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-sizing: border-box;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+}
+.top-announcement:hover {
+    background-color: #a81515;
+}
+
+/* Cabeçalho Profissional com Efeito Neon Sutil */
+header {
+    width: 100%;
+    background-color: #0e0e11;
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    border-bottom: 2px solid #ff1a1a;
+    box-shadow: 0 4px 20px rgba(255, 26, 26, 0.1);
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #ff1a1a;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px rgba(255, 26, 26, 0.3);
+}
+
+.header-icons {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.header-icons i {
+    color: #8e8e93;
+    font-size: 1.15rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.header-icons i:hover {
+    color: #ff1a1a;
+}
+
+/* Botão Copyright com Link do WhatsApp */
+.btn-copyright {
+    background-color: #1a1a1f;
+    color: #ffffff;
+    border: 1px solid #2d2d35;
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.btn-copyright:hover {
+    border-color: #ff1a1a;
+    background-color: #ff1a1a;
+    box-shadow: 0 0 10px rgba(255, 26, 26, 0.4);
+}
+
+/* Container do Catálogo */
+.container {
+    max-width: 420px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.category-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    padding-left: 8px;
+    border-left: 3px solid #ff1a1a;
+    letter-spacing: 0.5px;
+}
+
+/* Linha Divisória Customizada (LINE) */
+.line-separator {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, rgba(255,26,26,0) 0%, rgba(255,26,26,0.6) 50%, rgba(255,26,26,0) 100%);
+    margin: 35px 0;
+    border: none;
+}
+
+/* Card do Produto com Upgrade de Design */
+.product-card {
+    background-color: #111115;
+    border: 1px solid #1c1c24;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    transition: all 0.25s ease-in-out;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    border-color: #ff1a1a;
+    box-shadow: 0 8px 25px rgba(255, 26, 26, 0.2);
+}
+
+.product-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 195px;
+    background-color: #171721;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.product-info {
+    padding: 20px;
+}
+
+.product-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 12px 0;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+}
+
+/* Linha de Preço e Status */
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.product-price {
+    font-size: 1.35rem;
+    color: #ffffff;
+    font-weight: 700;
+    margin: 0;
+}
+
+.stock-badge {
+    background-color: rgba(0, 230, 118, 0.08);
+    color: #00e676;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.payment-method {
+    font-size: 0.75rem;
+    color: #8a8a93;
+    margin: 0 0 20px 0;
+}
+
+/* Botão de Compra com Gradiente e Brilho */
+.btn-buy {
+    display: block;
+    width: 100%;
+    background: linear-gradient(135deg, #b30000 0%, #ff1a1a 100%);
+    color: #ffffff;
+    text-align: center;
+    padding: 13px 0;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 15px rgba(255, 26, 26, 0.25);
+    transition: all 0.2s;
+    box-sizing: border-box;
+}
+
+.btn-buy:hover {
+    background: linear-gradient(135deg, #ff1a1a 0%, #ff4d4d 100%);
+    box-shadow: 0 6px 20px rgba(255, 26, 26, 0.4);
+    transform: scale(1.01);
+}
