@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRZX.sh STORE</title>
+    <title>Vitrine Demonstrativa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Configurações Gerais - Tema Premium Dark-Red */
@@ -131,7 +131,10 @@
             position: relative;
             width: 100%;
             height: 195px;
-            background-color: #171721;
+            background-color: #1c1c24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .product-image {
@@ -139,6 +142,15 @@
             height: 100%;
             object-fit: cover;
             display: block;
+        }
+
+        /* Texto de placeholder caso a imagem falhe ou não exista */
+        .image-placeholder-text {
+            position: absolute;
+            color: #575766;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
         .product-info {
@@ -210,12 +222,12 @@
 </head>
 <body>
 
-    <a href="SUA_INVITACAO_DO_DISCORD" class="top-announcement" target="_blank">
-        Os Menores Preços no Discord (Click Aqui)
+    <a href="#" class="top-announcement">
+        TEXTO DE AVISO / LINK DO SEU DISCORD AQUI
     </a>
 
     <header>
-        <div class="logo">PRZX C0D3D</div>
+        <div class="logo">SUA MARCA</div>
         <div class="header-icons">
             <i class="fa-solid fa-magnifying-glass"></i>
             <i class="fa-solid fa-headphones"></i>
@@ -226,37 +238,39 @@
 
     <div class="container">
         
-        <div class="category-title">Rio Rise</div>
+        <div class="category-title">Nome da Categoria 1</div>
 
         <div class="product-card">
             <div class="product-image-wrapper">
-                <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="OG Menu (Mobile)">
+                <span class="image-placeholder-text">[ SUA IMAGEM AQUI ]</span>
+                <img class="product-image" src="https://via.placeholder.com/420x195/1c1c24/1c1c24" alt="Placeholder">
             </div>
             <div class="product-info">
-                <h3 class="product-name">OG Menu (Mobile)</h3>
+                <h3 class="product-name">Nome do Produto 1</h3>
                 <div class="price-row">
-                    <p class="product-price">R$ 9,90</p>
-                    <span class="stock-badge"><i class="fa-solid fa-box"></i> DISPONÍVEL</span>
+                    <p class="product-price">R$ 00,00</p>
+                    <span class="stock-badge"><i class="fa-solid fa-box"></i> STATUS</span>
                 </div>
-                <p class="payment-method">À vista no PIX</p>
-                <a href="#" class="btn-buy">Ver Detalhes</a>
+                <p class="payment-method">Forma de pagamento (ex: PIX)</p>
+                <a href="#" class="btn-buy">Botão de Ação</a>
             </div>
         </div>
 
-        <div class="category-title">Counter-Strike 2</div>
+        <div class="category-title">Nome da Categoria 2</div>
 
         <div class="product-card">
             <div class="product-image-wrapper">
-                <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="CS2 Elysium">
+                <span class="image-placeholder-text">[ SUA IMAGEM AQUI ]</span>
+                <img class="product-image" src="https://via.placeholder.com/420x195/1c1c24/1c1c24" alt="Placeholder">
             </div>
             <div class="product-info">
-                <h3 class="product-name">CS2 Elysium</h3>
+                <h3 class="product-name">Nome do Produto 2</h3>
                 <div class="price-row">
-                    <p class="product-price">R$ 20,00</p>
-                    <span class="stock-badge"><i class="fa-solid fa-box"></i> DISPONÍVEL</span>
+                    <p class="product-price">R$ 00,00</p>
+                    <span class="stock-badge"><i class="fa-solid fa-box"></i> STATUS</span>
                 </div>
-                <p class="payment-method">À vista no PIX</p>
-                <a href="#" class="btn-buy">Ver Detalhes</a>
+                <p class="payment-method">Forma de pagamento (ex: PIX)</p>
+                <a href="#" class="btn-buy">Botão de Ação</a>
             </div>
         </div>
 
