@@ -2,7 +2,7 @@ import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 // O banco de dados fica no servidor. O cliente NÃO consegue alterar o preço.
 const produtosDB = {
-    1: { nome: "Prod 1", preco: 15.00 },
+    1: { nome: "Prod 1", preco: 1.00 },
     2: { nome: "Prod 2", preco: 25.00 },
     3: { nome: "Prod 3", preco: 50.00 },
     4: { nome: "Prod 4", preco: 10.00 },
