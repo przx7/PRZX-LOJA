@@ -6,6 +6,81 @@
     <title>STORE ONLINE BY PRZX.sh</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos básicos para o modal do PIX */
+        .pix-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+        }
+        .pix-modal-content {
+            background-color: #111;
+            color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid #ff0000;
+            box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.4);
+        }
+        .pix-modal h3 {
+            margin-top: 0;
+            color: #ff0000;
+        }
+        .qr-code-box {
+            background: #fff;
+            padding: 10px;
+            display: inline-block;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .qr-code-box img {
+            width: 200px;
+            height: 200px;
+            display: block;
+        }
+        .pix-input-group {
+            margin: 15px 0;
+        }
+        .pix-input-group textarea {
+            width: 100%;
+            height: 60px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 8px;
+            resize: none;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+        .btn-pix {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        .btn-copy {
+            background-color: #ff0000;
+            color: #fff;
+        }
+        .btn-close-pix {
+            background-color: #222;
+            color: #bbb;
+            border: 1px solid #444;
+        }
+    </style>
 </head>
 <body>
 
@@ -210,6 +285,42 @@
             <p class="powered-by">Powered by <span>PRZX.sh</span></p>
         </div>
     </footer>
+
+    <div id="modal-pix" class="pix-modal" style="display: none;">
+        <div class="pix-modal-content">
+            <h3><i class="fa-solid fa-qrcode"></i> Pagamento via PIX</h3>
+            <p style="font-size: 14px; margin: 5px 0;">Escaneie o QR Code abaixo ou utilize o Copia e Cola:</p>
+            
+            <div class="qr-code-box">
+                <img id="modal-qr-img" src="" alt="Carregando QR Code...">
+            </div>
+            
+            <div class="pix-input-group">
+                <textarea id="modal-pix-text" readonly onclick="this.select()"></textarea>
+            </div>
+            
+            <button class="btn-pix btn-copy" onclick="copiarPixTexto()">
+                <i class="fa-solid fa-copy"></i> Copiar Código PIX
+            </button>
+            
+            <button class="btn-pix btn-close-pix" onclick="document.getElementById('modal-pix').style.display='none'">
+                Fechar Janela
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Função auxiliar para o botão de copiar o código PIX
+        function copiarPixTexto() {
+            const campoTexto = document.getElementById('modal-pix-text');
+            campoTexto.select();
+            campoTexto.setSelectionRange(0, 99999); // Mobile seguro
+            
+            navigator.clipboard.writeText(campoTexto.value)
+                .then(() => alert("Código PIX copiado com sucesso!"))
+                .catch(() => alert("Erro ao copiar automaticamente. Selecione o texto e copie manualmente."));
+        }
+    </script>
 
     <script src="script.js"></script>
 </body>
