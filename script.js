@@ -12,8 +12,11 @@ const produtosDB = {
     10: { nome: "Prod 10", valor: "R$ 65,00", estoque: 9, desc: "Servidor Discord Customizado Pré-Montado com bots automáticos." }
 };
 
-// Variável para rastrear qual produto está atualmente aberto
+// Estados Globais da Aplicação
 let produtoAbertoId = null;
+let carrinho = [];
+
+// --- ENGINES DO CATÁLOGO DE PRODUTOS ---
 
 function abrirModal(produtoId, linhaId) {
     const cardClicado = document.querySelector(`.product-card[data-id="${produtoId}"]`);
@@ -23,8 +26,6 @@ function abrirModal(produtoId, linhaId) {
 
     if (!produto) return;
 
-    // --- CASO DE RECOLHER ---
-    // Se clicar no MESMO produto que já está aberto, recolhe ele e volta tudo ao normal
     if (produtoAbertoId === produtoId) {
         if (cardClicado) cardClicado.classList.remove('selected');
         if (botaoClicado) botaoClicado.textContent = 'Ver';
@@ -32,19 +33,16 @@ function abrirModal(produtoId, linhaId) {
             expansionArea.classList.remove('active');
             expansionArea.innerHTML = '';
         }
-        produtoAbertoId = null; // Reseta o estado
+        produtoAbertoId = null;
         return;
     }
 
-    // --- CASO DE ABRIR OU ALTERNAR ---
-    // 1. Resetar todos os botões do catálogo para "Ver" e remover as seleções visuais
     document.querySelectorAll('.product-card').forEach(card => {
         card.classList.remove('selected');
         const btn = card.querySelector('.btn-buy');
         if (btn) btn.textContent = 'Ver';
     });
 
-    // 2. Fechar todas as outras abas de expansão que estiverem abertas em outras linhas
     document.querySelectorAll('.product-details-expansion').forEach(exp => {
         if (exp.id !== `expansion-${linhaId}`) {
             exp.classList.remove('active');
@@ -52,11 +50,9 @@ function abrirModal(produtoId, linhaId) {
         }
     });
 
-    // 3. Aplicar a seleção visual no card e mudar o texto do botão atual para RECOLHER
     if (cardClicado) cardClicado.classList.add('selected');
     if (botaoClicado) botaoClicado.textContent = 'Recolher';
 
-    // 4. Injetar o conteúdo atualizado do produto dentro da aba expansiva da linha
     expansionArea.innerHTML = `
         <div class="expansion-content">
             <h4>${produto.nome} - Detalhes do Pedido</h4>
@@ -77,16 +73,141 @@ function abrirModal(produtoId, linhaId) {
         </div>
     `;
 
-    // 5. Ativar a animação de abertura da aba e salvar o ID do produto aberto
     expansionArea.classList.add('active');
     produtoAbertoId = produtoId;
 }
 
-// Funções de ação (Lógica de carrinho e pagamento posterior)
-function adicionarCarrinho(id) {
-    alert(`Produto ${id} adicionado ao carrinho com sucesso!`);
+// --- ENGINES DO SISTEMA DE CARRINHO (SPA) ---
+
+// Auxiliar para converter texto de moeda "R$ 15,00" em número real float (15.00)
+function converterPrecoParaFloat(precoStr) {
+    return parseFloat(precoStr.replace("R$", "").replace(".", "").replace(",", ".").trim());
 }
 
+// Auxiliar para formatar número real de volta para padrão monetário brasileiro
+function formatarDinheiro(valor) {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function adicionarCarrinho(id) {
+    const produto = produtosDB[id];
+    if (!produto) return;
+
+    // Verificar se o produto já existe na lista do carrinho
+    const itemNoCarrinho = carrinho.find(item => item.id === id);
+
+    if (itemNoCarrinho) {
+        if (itemNoCarrinho.quantidade < produto.estoque) {
+            itemNoCarrinho.quantidade++;
+        } else {
+            alert("Desculpe parceiro, limite de estoque atingido para este item!");
+            return;
+        }
+    } else {
+        carrinho.push({
+            id: id,
+            nome: produto.nome,
+            valor: produto.valor,
+            quantidade: 1
+        });
+    }
+
+    // Atualizar os elementos visuais
+    atualizarInterfaceCarrinho();
+    
+    // Jogar o usuário direto para a página do carrinho conforme solicitado
+    mostrarCarrinho();
+}
+
+function removerDoCarrinho(id) {
+    carrinho = carrinho.filter(item => item.id !== id);
+    atualizarInterfaceCarrinho();
+}
+
+function atualizarInterfaceCarrinho() {
+    // 1. Atualizar o badge numérico no header
+    const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+    document.getElementById('cart-counter').textContent = totalItens;
+
+    // 2. Renderizar os cards dentro da tela do carrinho
+    const container = document.getElementById('cart-items-container');
+    if (!container) return;
+
+    if (carrinho.length === 0) {
+        container.innerHTML = `
+            <div class="cart-empty-msg">
+                <i class="fa-solid fa-basket-shopping" style="font-size: 2rem; margin-bottom: 12px; display:block; color:#2d2d35;"></i>
+                Seu carrinho está vazio, mestre!
+            </div>
+        `;
+        document.getElementById('cart-total-price').textContent = formatarDinheiro(0);
+        return;
+    }
+
+    let htmlInjetado = '';
+    let precoFinalAcumulado = 0;
+
+    carrinho.forEach(item => {
+        const valorFloat = converterPrecoParaFloat(item.valor);
+        const subtotal = valorFloat * item.quantidade;
+        precoFinalAcumulado += subtotal;
+
+        htmlInjetado += `
+            <div class="cart-item">
+                <img class="cart-item-img" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="${item.nome}">
+                <div class="cart-item-details">
+                    <h4 class="cart-item-name">${item.nome}</h4>
+                    <p class="cart-item-price">${item.valor} <span class="cart-item-quantity">x${item.quantidade}</span></p>
+                </div>
+                <i class="fa-solid fa-trash cart-item-remove" onclick="removerDoCarrinho(${item.id})"></i>
+            </div>
+        `;
+    });
+
+    container.innerHTML = htmlInjetado;
+    document.getElementById('cart-total-price').textContent = formatarDinheiro(precoFinalAcumulado);
+}
+
+// --- CONTROLES DE NAVEGAÇÃO SPA ---
+
+function mostrarCarrinho() {
+    // Ocultar catálogo e exibir o carrinho
+    document.getElementById('catalog-view').style.display = 'none';
+    document.getElementById('cart-view').style.display = 'block';
+
+    // Limpar seleções de abas abertas no catálogo para evitar conflitos ao retornar
+    document.querySelectorAll('.product-details-expansion').forEach(exp => {
+        exp.classList.remove('active');
+        exp.innerHTML = '';
+    });
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.classList.remove('selected');
+        const btn = card.querySelector('.btn-buy');
+        if (btn) btn.textContent = 'Ver';
+    });
+    produtoAbertoId = null;
+
+    // Subir a página suavemente para o topo
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function mostrarCatalogo() {
+    // Ocultar carrinho e exibir catálogo de volta
+    document.getElementById('cart-view').style.display = 'none';
+    document.getElementById('catalog-view').style.display = 'block';
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// --- PROCESSAMENTO FINAL DE PAGAMENTO ---
+
 function finalizarCompra(id) {
-    alert(`Redirecionando para a geração do PIX Dinâmico (Mercado Pago) do produto ${id}...`);
+    // Função rápida do botão dinâmico individual
+    alert(`Iniciando Checkout Direto do produto ${id}. Redirecionando para Mercado Pago...`);
+}
+
+function finalizarCompraDoCarrinho() {
+    // Função do botão da página do carrinho principal
+    const total = document.getElementById('cart-total-price').textContent;
+    alert(`Automação PRZX: Preparando os dados de todos os produtos do carrinho. Valor total a processar via PIX Mercado Pago: ${total}`);
 }
