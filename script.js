@@ -50,7 +50,7 @@ function abrirModal(produtoId, linhaId) {
         }
     });
 
-    if (cardClicado) cardClicado.classList.add('selected');
+    if (cardClicado) cardClicadd = cardClicado.classList.add('selected');
     if (botaoClicado) botaoClicado.textContent = 'Recolher';
 
     expansionArea.innerHTML = `
@@ -87,7 +87,6 @@ function formatarDinheiro(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// Modificado: Agora apenas adiciona ao carrinho e atualiza os números, sem mudar de tela
 function adicionarCarrinho(id) {
     const produto = produtosDB[id];
     if (!produto) return;
@@ -120,16 +119,24 @@ function removerDoCarrinho(id) {
 }
 
 function atualizarInterfaceCarrinho() {
+    // MODIFICADO: Feedback visual de pulso no contador (badge) do menu superior
+    const counterEl = document.getElementById('cart-counter');
+    if (counterEl) {
+        counterEl.classList.remove('badge-pop');
+        void counterEl.offsetWidth; // Truque necessário para resetar a animação do CSS no DOM
+        counterEl.classList.add('badge-pop');
+    }
+
     // 1. Atualizar o badge numérico no header
     const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
-    document.getElementById('cart-counter').textContent = totalItens;
+    if (counterEl) counterEl.textContent = totalItens;
 
     // 2. Capturar container e o botão de finalização
     const container = document.getElementById('cart-items-container');
     const btnFinalizar = document.getElementById('btn-finalize-checkout');
     if (!container) return;
 
-    // Modificado: Se o carrinho estiver vazio, bloqueia visualmente e funcionalmente o botão
+    // Se o carrinho estiver vazio, bloqueia visualmente e funcionalmente o botão
     if (carrinho.length === 0) {
         container.innerHTML = `
             <div class="cart-empty-msg">
@@ -143,7 +150,7 @@ function atualizarInterfaceCarrinho() {
             btnFinalizar.disabled = true;
             btnFinalizar.style.opacity = '0.3';
             btnFinalizar.style.cursor = 'not-allowed';
-            btnFinalizar.style.pointerEvents = 'none'; // Impede cliques complementares
+            btnFinalizar.style.pointerEvents = 'none';
         }
         return;
     }
@@ -180,39 +187,69 @@ function atualizarInterfaceCarrinho() {
     document.getElementById('cart-total-price').textContent = formatarDinheiro(precoFinalAcumulado);
 }
 
-// --- CONTROLES DE NAVEGAÇÃO SPA ---
+// --- CONTROLES DE NAVEGAÇÃO SPA COM TRANSIÇÕES FLUIDAS ---
 
 function mostrarCarrinho() {
-    document.getElementById('catalog-view').style.display = 'none';
-    document.getElementById('cart-view').style.display = 'block';
+    const catalogo = document.getElementById('catalog-view');
+    const carrinhoTela = document.getElementById('cart-view');
 
-    // Limpar seleções de abas abertas no catálogo
-    document.querySelectorAll('.product-details-expansion').forEach(exp => {
-        exp.classList.remove('active');
-        exp.innerHTML = '';
-    });
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.classList.remove('selected');
-        const btn = card.querySelector('.btn-buy');
-        if (btn) btn.textContent = 'Ver';
-    });
-    produtoAbertoId = null;
+    // 1. Remove a classe de visibilidade do catálogo (Inicia Fade-out)
+    catalogo.classList.remove('view-active');
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // 2. Aguarda 350ms (tempo sincronizado com a transição CSS) para mudar o display
+    setTimeout(() => {
+        catalogo.style.display = 'none';
+        carrinhoTela.style.display = 'block';
+
+        // Limpar seleções de abas abertas no catálogo
+        document.querySelectorAll('.product-details-expansion').forEach(exp => {
+            exp.classList.remove('active');
+            exp.innerHTML = '';
+        });
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.classList.remove('selected');
+            const btn = card.querySelector('.btn-buy');
+            if (btn) btn.textContent = 'Ver';
+        });
+        produtoAbertoId = null;
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // 3. Introduz a classe ativa para renderizar o Fade-in/Slide-up no Carrinho
+        setTimeout(() => {
+            carrinhoTela.classList.add('view-active');
+        }, 10);
+
+    }, 350);
 }
 
 function mostrarCatalogo() {
-    document.getElementById('cart-view').style.display = 'none';
-    document.getElementById('catalog-view').style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const catalogo = document.getElementById('catalog-view');
+    const carrinhoTela = document.getElementById('cart-view');
+
+    // 1. Remove a classe de visibilidade do carrinho (Inicia Fade-out)
+    carrinhoTela.classList.remove('view-active');
+
+    // 2. Aguarda a finalização da animação
+    setTimeout(() => {
+        carrinhoTela.style.display = 'none';
+        catalogo.style.display = 'block';
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // 3. Aplica o Fade-in/Slide-up de retorno para a Vitrine
+        setTimeout(() => {
+            catalogo.classList.add('view-active');
+        }, 10);
+
+    }, 350);
 }
 
 // --- PROCESSAMENTO FINAL DE PAGAMENTO ---
 
-// Modificado: O botão "Finalizar Compra" da vitrine joga direto para a tela de carrinho
 function finalizarCompra(id) {
-    adicionarCarrinho(id); // Garante que o item entra no carrinho
-    mostrarCarrinho();    // Redireciona para o carrinho imediatamente
+    adicionarCarrinho(id); // Adiciona silenciosamente
+    mostrarCarrinho();    // Executa a navegação com o novo efeito suave
 }
 
 function finalizarCompraDoCarrinho() {
@@ -220,5 +257,15 @@ function finalizarCompraDoCarrinho() {
     alert(`Automação PRZX: Iniciando integração com o Mercado Pago para processar o valor de ${total} via PIX.`);
 }
 
-// Executa uma verificação inicial para garantir que o botão comece bloqueado (já que o carrinho inicia zerado)
+// --- GATILHOS DE INICIALIZAÇÃO ---
+
+// Executa uma verificação inicial para garantir as travas do botão de checkout
 atualizarInterfaceCarrinho();
+
+// Força a vitrine inicial a surgir com animação suave assim que a estrutura do site carregar completamente
+document.addEventListener("DOMContentLoaded", () => {
+    const catalogo = document.getElementById('catalog-view');
+    if (catalogo) {
+        catalogo.classList.add('view-active');
+    }
+});
