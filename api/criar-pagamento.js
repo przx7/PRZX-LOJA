@@ -37,9 +37,8 @@ export default async function handler(req, res) {
                 transaction_amount: produto.preco, // Preço real e blindado do servidor
                 description: `PRZX.sh - ${produto.nome}`,
                 payment_method_id: 'pix',
-                payer: { email: emailCliente },
-                // A Vercel vai gerar o link final do seu site, ex: https://seu-site.vercel.app
-                notification_url: `https://${req.headers.host}/api/webhook-mercadopago`
+                payer: { email: emailCliente }
+                // Linha do notification_url removida temporariamente para testes
             }
         };
 
