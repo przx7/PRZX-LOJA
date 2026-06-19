@@ -12,18 +12,39 @@ const produtosDB = {
     10: { nome: "Prod 10", valor: "R$ 65,00", estoque: 9, desc: "Servidor Discord Customizado Pré-Montado com bots automáticos." }
 };
 
+// Variável para rastrear qual produto está atualmente aberto
+let produtoAbertoId = null;
+
 function abrirModal(produtoId, linhaId) {
-    // 1. Gerenciar a seleção visual nos cards
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.classList.remove('selected');
-    });
-    
     const cardClicado = document.querySelector(`.product-card[data-id="${produtoId}"]`);
-    if (cardClicado) {
-        cardClicado.classList.add('selected');
+    const botaoClicado = cardClicado ? cardClicado.querySelector('.btn-buy') : null;
+    const expansionArea = document.getElementById(`expansion-${linhaId}`);
+    const produto = produtosDB[produtoId];
+
+    if (!produto) return;
+
+    // --- CASO DE RECOLHER ---
+    // Se clicar no MESMO produto que já está aberto, recolhe ele e volta tudo ao normal
+    if (produtoAbertoId === produtoId) {
+        if (cardClicado) cardClicado.classList.remove('selected');
+        if (botaoClicado) botaoClicado.textContent = 'Ver';
+        if (expansionArea) {
+            expansionArea.classList.remove('active');
+            expansionArea.innerHTML = '';
+        }
+        produtoAbertoId = null; // Reseta o estado
+        return;
     }
 
-    // 2. Fechar todas as outras abas de expansão abertas
+    // --- CASO DE ABRIR OU ALTERNAR ---
+    // 1. Resetar todos os botões do catálogo para "Ver" e remover as seleções visuais
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.classList.remove('selected');
+        const btn = card.querySelector('.btn-buy');
+        if (btn) btn.textContent = 'Ver';
+    });
+
+    // 2. Fechar todas as outras abas de expansão que estiverem abertas em outras linhas
     document.querySelectorAll('.product-details-expansion').forEach(exp => {
         if (exp.id !== `expansion-${linhaId}`) {
             exp.classList.remove('active');
@@ -31,13 +52,11 @@ function abrirModal(produtoId, linhaId) {
         }
     });
 
-    // 3. Pegar a aba de expansão da linha atual
-    const expansionArea = document.getElementById(`expansion-${linhaId}`);
-    const produto = produtosDB[produtoId];
+    // 3. Aplicar a seleção visual no card e mudar o texto do botão atual para RECOLHER
+    if (cardClicado) cardClicado.classList.add('selected');
+    if (botaoClicado) botaoClicado.textContent = 'Recolher';
 
-    if (!produto) return;
-
-    // 4. Injetar o conteúdo do produto selecionado na aba expansiva
+    // 4. Injetar o conteúdo atualizado do produto dentro da aba expansiva da linha
     expansionArea.innerHTML = `
         <div class="expansion-content">
             <h4>${produto.nome} - Detalhes do Pedido</h4>
@@ -58,11 +77,12 @@ function abrirModal(produtoId, linhaId) {
         </div>
     `;
 
-    // 5. Ativar a animação de abertura
+    // 5. Ativar a animação de abertura da aba e salvar o ID do produto aberto
     expansionArea.classList.add('active');
+    produtoAbertoId = produtoId;
 }
 
-// Funções de ação futuras para integrar com Mercado Pago
+// Funções de ação (Lógica de carrinho e pagamento posterior)
 function adicionarCarrinho(id) {
     alert(`Produto ${id} adicionado ao carrinho com sucesso!`);
 }
