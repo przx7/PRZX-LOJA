@@ -569,3 +569,29 @@ footer {
     padding: 40px 0;
     font-size: 0.95rem;
 }
+
+
+/* Classes base para as telas de visualização */
+#catalog-view, #cart-view {
+    opacity: 0;
+    transform: translateY(15px); /* Começa um pouco mais abaixo */
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* Classe que o JavaScript vai injetar para ativar a transição */
+#catalog-view.view-active, #cart-view.view-active {
+    opacity: 1;
+    transform: translateY(0); /* Volta para a posição original */
+}
+
+/* BÔNUS: Efeito de "Pulsar" no contador do carrinho ao adicionar item */
+@keyframes popBadge {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); background-color: #ff1a1a; }
+    100% { transform: scale(1); }
+}
+
+.badge-pop {
+    animation: popBadge 0.3s ease-in-out;
+}
+
