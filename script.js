@@ -79,21 +79,19 @@ function abrirModal(produtoId, linhaId) {
 
 // --- ENGINES DO SISTEMA DE CARRINHO (SPA) ---
 
-// Auxiliar para converter texto de moeda "R$ 15,00" em número real float (15.00)
 function converterPrecoParaFloat(precoStr) {
     return parseFloat(precoStr.replace("R$", "").replace(".", "").replace(",", ".").trim());
 }
 
-// Auxiliar para formatar número real de volta para padrão monetário brasileiro
 function formatarDinheiro(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
+// Modificado: Agora apenas adiciona ao carrinho e atualiza os números, sem mudar de tela
 function adicionarCarrinho(id) {
     const produto = produtosDB[id];
     if (!produto) return;
 
-    // Verificar se o produto já existe na lista do carrinho
     const itemNoCarrinho = carrinho.find(item => item.id === id);
 
     if (itemNoCarrinho) {
@@ -112,11 +110,8 @@ function adicionarCarrinho(id) {
         });
     }
 
-    // Atualizar os elementos visuais
+    // Atualiza a interface (badge e lista)
     atualizarInterfaceCarrinho();
-    
-    // Jogar o usuário direto para a página do carrinho conforme solicitado
-    mostrarCarrinho();
 }
 
 function removerDoCarrinho(id) {
@@ -129,10 +124,12 @@ function atualizarInterfaceCarrinho() {
     const totalItens = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
     document.getElementById('cart-counter').textContent = totalItens;
 
-    // 2. Renderizar os cards dentro da tela do carrinho
+    // 2. Capturar container e o botão de finalização
     const container = document.getElementById('cart-items-container');
+    const btnFinalizar = document.getElementById('btn-finalize-checkout');
     if (!container) return;
 
+    // Modificado: Se o carrinho estiver vazio, bloqueia visualmente e funcionalmente o botão
     if (carrinho.length === 0) {
         container.innerHTML = `
             <div class="cart-empty-msg">
@@ -141,7 +138,22 @@ function atualizarInterfaceCarrinho() {
             </div>
         `;
         document.getElementById('cart-total-price').textContent = formatarDinheiro(0);
+        
+        if (btnFinalizar) {
+            btnFinalizar.disabled = true;
+            btnFinalizar.style.opacity = '0.3';
+            btnFinalizar.style.cursor = 'not-allowed';
+            btnFinalizar.style.pointerEvents = 'none'; // Impede cliques complementares
+        }
         return;
+    }
+
+    // Se tiver itens, libera o botão completamente
+    if (btnFinalizar) {
+        btnFinalizar.disabled = false;
+        btnFinalizar.style.opacity = '1';
+        btnFinalizar.style.cursor = 'pointer';
+        btnFinalizar.style.pointerEvents = 'auto';
     }
 
     let htmlInjetado = '';
@@ -171,11 +183,10 @@ function atualizarInterfaceCarrinho() {
 // --- CONTROLES DE NAVEGAÇÃO SPA ---
 
 function mostrarCarrinho() {
-    // Ocultar catálogo e exibir o carrinho
     document.getElementById('catalog-view').style.display = 'none';
     document.getElementById('cart-view').style.display = 'block';
 
-    // Limpar seleções de abas abertas no catálogo para evitar conflitos ao retornar
+    // Limpar seleções de abas abertas no catálogo
     document.querySelectorAll('.product-details-expansion').forEach(exp => {
         exp.classList.remove('active');
         exp.innerHTML = '';
@@ -187,27 +198,27 @@ function mostrarCarrinho() {
     });
     produtoAbertoId = null;
 
-    // Subir a página suavemente para o topo
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function mostrarCatalogo() {
-    // Ocultar carrinho e exibir catálogo de volta
     document.getElementById('cart-view').style.display = 'none';
     document.getElementById('catalog-view').style.display = 'block';
-    
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // --- PROCESSAMENTO FINAL DE PAGAMENTO ---
 
+// Modificado: O botão "Finalizar Compra" da vitrine joga direto para a tela de carrinho
 function finalizarCompra(id) {
-    // Função rápida do botão dinâmico individual
-    alert(`Iniciando Checkout Direto do produto ${id}. Redirecionando para Mercado Pago...`);
+    adicionarCarrinho(id); // Garante que o item entra no carrinho
+    mostrarCarrinho();    // Redireciona para o carrinho imediatamente
 }
 
 function finalizarCompraDoCarrinho() {
-    // Função do botão da página do carrinho principal
     const total = document.getElementById('cart-total-price').textContent;
-    alert(`Automação PRZX: Preparando os dados de todos os produtos do carrinho. Valor total a processar via PIX Mercado Pago: ${total}`);
+    alert(`Automação PRZX: Iniciando integração com o Mercado Pago para processar o valor de ${total} via PIX.`);
 }
+
+// Executa uma verificação inicial para garantir que o botão comece bloqueado (já que o carrinho inicia zerado)
+atualizarInterfaceCarrinho();
