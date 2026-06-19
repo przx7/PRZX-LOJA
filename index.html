@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PRZX.sh STORE</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Configurações Gerais - Tema Escuro */
+        /* Configurações Gerais - Tema Dark-Red */
         body {
-            background-color: #0d0c1d;
+            background-color: #0a0a0c;
             color: #ffffff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -17,27 +18,77 @@
             align-items: center;
         }
 
-        /* Topo / Header */
+        /* Barra de Anúncio Superior (Estilo Print Original) */
+        .top-announcement {
+            width: 100%;
+            background-color: #8a2be2; /* Mantido o roxo chamativo para o anúncio */
+            color: #ffffff;
+            text-align: center;
+            padding: 8px 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: background 0.2s;
+        }
+        .top-announcement:hover {
+            background-color: #9d4edd;
+        }
+
+        /* Cabeçalho Profissional */
         header {
             width: 100%;
-            background-color: #161233;
+            background-color: #111114;
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-sizing: border-box;
-            border-bottom: 2px solid #8a2be2;
+            border-bottom: 2px solid #ff2a2a; /* Linha Red Neon */
         }
 
         .logo {
             font-size: 1.2rem;
-            font-weight: bold;
-            color: #a046ff;
+            font-weight: 800;
+            color: #ff2a2a;
+            letter-spacing: 1px;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-icons i {
+            color: #a0a0a5;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .header-icons i:hover {
+            color: #ff2a2a;
+        }
+
+        .btn-login {
+            background-color: #222226;
+            color: #ffffff;
+            border: 1px solid #333339;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-login:hover {
+            border-color: #ff2a2a;
+            background-color: #ff2a2a;
         }
 
         /* Container do Catálogo */
         .container {
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
@@ -45,104 +96,155 @@
 
         .category-title {
             font-size: 1.1rem;
+            font-weight: 700;
             color: #ffffff;
-            margin-top: 25px;
+            margin-top: 30px;
             margin-bottom: 15px;
             padding-left: 5px;
+            border-left: 3px solid #ff2a2a; /* Detalhe vermelho na categoria */
         }
 
-        /* Card do Produto */
+        /* Card do Produto Profissional */
         .product-card {
-            background-color: #131129;
-            border: 1px solid #251f47;
-            border-radius: 12px;
+            background-color: #121216;
+            border: 1px solid #1f1f25;
+            border-radius: 14px;
             overflow: hidden;
-            margin-bottom: 20px;
-            transition: transform 0.2s;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.2s ease-in-out;
         }
 
         .product-card:hover {
-            transform: scale(1.02);
-            border-color: #8a2be2;
+            transform: translateY(-4px);
+            border-color: #ff2a2a;
+            box-shadow: 0 6px 20px rgba(255, 42, 42, 0.15);
+        }
+
+        .product-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 190px;
+            background-color: #1a1a22;
         }
 
         .product-image {
             width: 100%;
-            height: 180px;
+            height: 100%;
             object-fit: cover;
             display: block;
         }
 
         .product-info {
-            padding: 15px;
+            padding: 18px;
         }
 
         .product-name {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 600;
-            margin: 0 0 10px 0;
+            margin: 0 0 12px 0;
+            color: #ffffff;
+        }
+
+        /* Alinhamento de Preço e Ícone de Estoque */
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
         }
 
         .product-price {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: #ffffff;
-            font-weight: bold;
+            font-weight: 700;
             margin: 0;
+        }
+
+        .stock-badge {
+            background-color: rgba(0, 200, 83, 0.1);
+            color: #00c853;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
         }
 
         .payment-method {
             font-size: 0.75rem;
-            color: #a0a0a0;
-            margin: 2px 0 15px 0;
+            color: #98989f;
+            margin: 0 0 18px 0;
         }
 
-        /* Botão de Compra */
+        /* Botão de Compra Dark-Red */
         .btn-buy {
             display: block;
             width: 100%;
-            background-color: #8a2be2;
+            background: linear-gradient(135deg, #d31010 0%, #ff2a2a 100%);
             color: white;
             text-align: center;
-            padding: 10px 0;
+            padding: 12px 0;
             border-radius: 8px;
             text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: background 0.2s;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(255, 42, 42, 0.2);
+            transition: all 0.2s;
         }
 
         .btn-buy:hover {
-            background-color: #a046ff;
+            background: linear-gradient(135deg, #ff2a2a 0%, #ff5555 100%);
+            box-shadow: 0 6px 15px rgba(255, 42, 42, 0.3);
         }
     </style>
 </head>
 <body>
 
+    <a href="SUA_INVITACAO_DO_DISCORD" class="top-announcement" target="_blank">
+        Os Menores Preços no Discord (Click Aqui)
+    </a>
+
     <header>
         <div class="logo">PRZX C0D3D</div>
+        <div class="header-icons">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-headphones"></i>
+            <i class="fa-solid fa-basket-shopping"></i>
+            <a href="#" class="btn-login">Entrar</a>
+        </div>
     </header>
 
     <div class="container">
         
-        <div class="category-title">Categoria De Produto 1</div>
+        <div class="category-title">Rio Rise</div>
 
         <div class="product-card">
-            <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="OG Menu (Mobile)">
+            <div class="product-image-wrapper">
+                <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="OG Menu (Mobile)">
+            </div>
             <div class="product-info">
-                <h3 class="product-name">Nome Do Produto</h3>
-                <p class="product-price">R$ 9,90</p>
+                <h3 class="product-name">OG Menu (Mobile)</h3>
+                <div class="price-row">
+                    <p class="product-price">R$ 9,90</p>
+                    <span class="stock-badge"><i class="fa-solid fa-box"></i> DISPONÍVEL</span>
+                </div>
                 <p class="payment-method">À vista no PIX</p>
                 <a href="#" class="btn-buy">Ver Detalhes</a>
             </div>
         </div>
 
-        <div class="category-title">Categoria De Produto 2</div>
+        <div class="category-title">Counter-Strike 2</div>
 
         <div class="product-card">
-            <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="CS2 Elysium">
+            <div class="product-image-wrapper">
+                <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="CS2 Elysium">
+            </div>
             <div class="product-info">
-                <h3 class="product-name">Nome Do Produto</h3>
-                <p class="product-price">R$ 20,00</p>
+                <h3 class="product-name">CS2 Elysium</h3>
+                <div class="price-row">
+                    <p class="product-price">R$ 20,00</p>
+                    <span class="stock-badge"><i class="fa-solid fa-box"></i> DISPONÍVEL</span>
+                </div>
                 <p class="payment-method">À vista no PIX</p>
                 <a href="#" class="btn-buy">Ver Detalhes</a>
             </div>
