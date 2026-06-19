@@ -441,3 +441,131 @@ footer {
 .btn-expansion-buy:hover {
     background: linear-gradient(135deg, #ff1a1a 0%, #ff4d4d 100%);
 }
+
+
+/* ==========================================
+   ESTILIZAÇÃO DO COMPONENTE DO CARRINHO
+   ========================================== */
+
+/* Wrapper do Ícone da Cesta no Header */
+.cart-btn-header {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* Badge Vermelho de Notificação de Itens */
+#cart-counter {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background-color: #ff1a1a;
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 1px solid #0e0e11;
+    box-shadow: 0 0 5px rgba(255, 26, 26, 0.6);
+}
+
+/* Lista de Itens do Carrinho */
+.cart-item {
+    display: flex;
+    align-items: center;
+    background-color: #111115;
+    border: 1px solid #1c1c24;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    gap: 15px;
+}
+
+.cart-item-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.cart-item-details {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    color: #ffffff;
+}
+
+.cart-item-price {
+    font-size: 0.85rem;
+    color: #ff1a1a;
+    font-weight: 700;
+    margin: 0;
+}
+
+.cart-item-quantity {
+    font-size: 0.8rem;
+    color: #8a8a93;
+    font-weight: 400;
+    margin-left: 5px;
+}
+
+/* Ícone de Deletar Produto */
+.cart-item-remove {
+    color: #636366;
+    cursor: pointer;
+    transition: color 0.2s;
+    font-size: 1.1rem;
+    padding: 5px;
+}
+.cart-item-remove:hover {
+    color: #ff1a1a;
+}
+
+/* Caixa de Resumo Fixo */
+.cart-summary {
+    background-color: #0e0e11;
+    border: 1px solid #2d2d35;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 25px;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    border-bottom: 1px solid #1c1c24;
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+}
+
+#cart-total-price {
+    color: #ff1a1a;
+}
+
+/* Ajustes nos Botões do Carrinho */
+.btn-finalize-cart {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.95rem;
+}
+
+.btn-continue-shopping {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+/* Mensagem de Carrinho Vazio */
+.cart-empty-msg {
+    text-align: center;
+    color: #8a8a93;
+    padding: 40px 0;
+    font-size: 0.95rem;
+}
