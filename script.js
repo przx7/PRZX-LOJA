@@ -50,7 +50,6 @@ function abrirModal(produtoId, linhaId) {
         }
     });
 
-    // BUG CORRIGIDO: Removido o erro de digitação "cardClicadd"
     if (cardClicado) cardClicado.classList.add('selected');
     if (botaoClicado) botaoClicado.textContent = 'Recolher';
 
@@ -122,7 +121,7 @@ function atualizarInterfaceCarrinho() {
     const counterEl = document.getElementById('cart-counter');
     if (counterEl) {
         counterEl.classList.remove('badge-pop');
-        void counterEl.offsetWidth; // Reset de animação CSS
+        void counterEl.offsetWidth; 
         counterEl.classList.add('badge-pop');
     }
 
@@ -236,7 +235,6 @@ function mostrarCatalogo() {
 // --- PROCESSAMENTO FINAL DE PAGAMENTO INTEGRADO À API VERCEL ---
 
 function finalizarCompra(id) {
-    // Se o item já não estiver no carrinho, adiciona para prosseguir para o pagamento rápido
     const jaTemNoCarrinho = carrinho.some(item => item.id === id);
     if (!jaTemNoCarrinho) {
         adicionarCarrinho(id);
@@ -244,15 +242,13 @@ function finalizarCompra(id) {
     mostrarCarrinho();
 }
 
-// ATUALIZADO: Integração Direta e Segura com a API do Mercado Pago na Vercel
+// ATUALIZADO: Renderização dinâmica do PIX no novo Modal do Frontend
 async function finalizarCompraDoCarrinho() {
     if (carrinho.length === 0) return;
 
     const email = prompt("Digite seu e-mail para receber o produto automaticamente:");
     if (!email) return alert("O e-mail é obrigatório para realizar e rastrear a entrega!");
 
-    // Para fins de compatibilidade com a rota simplificada, enviaremos o ID e quantidade do item atual
-    // Em sistemas de carrinho múltiplo complexos, você enviaria a array 'carrinho' inteira.
     const primeiroItem = carrinho[0];
 
     const btnFinalizar = document.getElementById('btn-finalize-checkout');
@@ -262,7 +258,7 @@ async function finalizarCompraDoCarrinho() {
     }
 
     try {
-        // Envia os dados de forma privada para a Serverless Function da Vercel
+        // Rota exata configurada no back-end da Vercel
         const resposta = await fetch('/api/criar-pagamento', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -275,17 +271,18 @@ async function finalizarCompraDoCarrinho() {
         const dados = await resposta.json();
 
         if (dados.qr_code) {
-            // Sucesso! Registra no console e alerta o cliente.
-            console.log("=== AUTOMAÇÃO PRZX ===");
-            console.log("Código Copia e Cola PIX:", dados.qr_code);
-            console.log("String Base64 do QR Code:", dados.qr_code_base64);
-
-            alert(`PIX Gerado para ${primeiroItem.nome}!\n\nCopie o código 'Copia e Cola' direto no Console do seu navegador (F12) para pagar.`);
+            // 1. Injeta a imagem Base64 do QR Code no elemento correspondente do modal
+            document.getElementById('modal-qr-img').src = `data:image/jpeg;base64,${dados.qr_code_base64}`;
             
-            // Opcional: Você pode limpar o carrinho após gerar a ordem de pagamento
-            // carrinho = [];
-            // atualizarInterfaceCarrinho();
-            // mostrarCatalogo();
+            // 2. Injeta a string de texto para a função "Copia e Cola"
+            document.getElementById('modal-pix-text').value = dados.qr_code;
+            
+            // 3. Altera o estilo do container do modal para 'flex' tornando-o visível e centralizado
+            document.getElementById('modal-pix').style.display = 'flex';
+
+            // Opcional: Limpa o carrinho local para evitar duplicações futuras
+            carrinho = [];
+            atualizarInterfaceCarrinho();
         } else {
             alert(`Erro do Servidor: ${dados.error || "Não foi possível gerar a cobrança."}`);
         }
