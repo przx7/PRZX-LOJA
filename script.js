@@ -1,18 +1,47 @@
 // Banco de dados simulado dos produtos gamers
 const produtosDB = {
-    1: { nome: "Prod 1", valor: "R$ 1,00", estoque: 12, desc: "Acesso Vitalício ao Pacote de Skins Raras. Entrega imediata via bot." },
-    2: { nome: "Prod 2", valor: "R$ 25,00", estoque: 5, desc: "Chave de Ativação Global para Steam. Código Premium de automação." },
-    3: { nome: "Prod 3", valor: "R$ 50,00", estoque: 2, desc: "Script VIP Atualizado Automatizado com suporte incluso de 30 dias." },
-    4: { nome: "Prod 4", valor: "R$ 10,00", estoque: 50, desc: "Pack de Moedas In-Game com envio 100% automático pós-PIX." },
-    5: { nome: "Prod 5", valor: "R$ 35,00", estoque: 8, desc: "Painel Avançado Gamer Edição Limitada PRZX.sh." },
-    6: { nome: "Prod 6", valor: "R$ 40,00", estoque: 14, desc: "Combo de Licenças Premium com Automação Inteligente Ativa." },
-    7: { nome: "Prod 7", valor: "R$ 90,00", estoque: 3, desc: "Acesso Completo à API de Jogos + Documentação Criptografada." },
-    8: { nome: "Prod 8", valor: "R$ 120,00", estoque: 1, desc: "Super Pack Software Full Pack Automático com Atualizações Semanais." },
-    9: { nome: "Prod 9", valor: "R$ 15,00", estoque: 22, desc: "Acesso ao Servidor Privado Gamer com Bots Exclusivos e Vantagens." },
-    10: { nome: "Prod 10", valor: "R$ 65,00", estoque: 6, desc: "E-book Estratégico Avançado + Scripts Iniciais de Otimização." }
+    1: { nome: "Prod 1", valor: "R$ 1,00", estoque: 12, desc: "Acesso Vitalício ao Pacote de Skins Raras. Entrega imediata via bot.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
+    2: { nome: "Prod 2", valor: "R$ 25,00", estoque: 5, desc: "Chave de Ativação Global para Steam. Código Premium de automação.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
+    3: { nome: "Prod 3", valor: "R$ 50,00", estoque: 2, desc: "Script VIP Atualizado Automatizado com suporte incluso de 30 dias.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
+    4: { nome: "Prod 4", valor: "R$ 10,00", estoque: 50, desc: "Pack de Moedas In-Game com envio 100% automático pós-PIX.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
+    5: { nome: "Prod 5", valor: "R$ 35,00", estoque: 8, desc: "Painel Avançado Gamer Edição Limitada PRZX.sh.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
+    6: { nome: "Prod 6", valor: "R$ 40,00", estoque: 14, desc: "Combo de Licenças Premium com Automação Inteligente Ativa.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
+    7: { nome: "Prod 7", valor: "R$ 90,00", estoque: 3, desc: "Acesso Completo à API de Jogos + Documentação Criptografada.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
+    8: { nome: "Prod 8", valor: "R$ 120,00", estoque: 1, desc: "Super Pack Software Full Pack Automático com Atualizações Semanais.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
+    9: { nome: "Prod 9", valor: "R$ 15,00", estoque: 22, desc: "Acesso ao Servidor Privado Gamer com Bots Exclusivos e Vantagens.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
+    10: { nome: "Prod 10", valor: "R$ 65,00", estoque: 6, desc: "E-book Estratégico Avançado + Scripts Iniciais de Otimização.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" }
 };
 
 let carrinho = [];
+
+// FUNÇÃO PARA RENDERIZAR OS PRODUTOS NA TELA DO CATÁLOGO
+function renderizarCatalogo() {
+    const catalogoContainer = document.getElementById('catalog-view');
+    if (!catalogoContainer) return;
+
+    catalogoContainer.innerHTML = ''; // Limpa antes de renderizar
+
+    for (const id in produtosDB) {
+        const produto = produtosDB[id];
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <img src="${produto.imagem}" alt="${produto.nome}" class="product-img">
+            <div class="product-info">
+                <h3 class="product-title">${produto.nome}</h3>
+                <p class="product-desc">${produto.desc}</p>
+                <div class="product-meta">
+                    <span class="product-price">${produto.valor}</span>
+                    <span class="product-stock"><i class="fa-solid fa-box"></i> Estoque: ${produto.estoque}</span>
+                </div>
+                <button class="btn-buy" onclick="adicionarAoCarrinho(${id})">
+                    <i class="fa-solid fa-cart-plus"></i> Adicionar ao Carrinho
+                </button>
+            </div>
+        `;
+        catalogoContainer.appendChild(card);
+    }
+}
 
 function alternarTela(telaAlvo) {
     const catalogo = document.getElementById('catalog-view');
@@ -68,7 +97,7 @@ function adicionarAoCarrinho(idProduto) {
 }
 
 function alterarQuantidadeItem(idProduto, mudanca) {
-    const item = carrinho.find(i => i.id === idProduto);
+    const item = Math.max ? carrinho.find(i => i.id === idProduto) : null;
     if (!item) return;
 
     const produtoOriginal = produtosDB[idProduto];
@@ -99,7 +128,7 @@ function atualizarInterfaceCarrinho() {
     let totalItens = 0;
 
     if (carrinho.length === 0) {
-        containerItens.innerHTML = `<div class=\"cart-empty-msg\"><i class=\"fa-solid fa-basket-shopping\" style=\"font-size: 2rem; margin-bottom: 10px; display: block;\"></i>Seu carrinho está vazio. Adicione produtos do catálogo!</div>`;
+        containerItens.innerHTML = `<div class="cart-empty-msg"><i class="fa-solid fa-basket-shopping" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>Seu carrinho está vazio. Adicione produtos do catálogo!</div>`;
         elementoPrecoTotal.innerText = "R$ 0,00";
         if (contadorCarrinho) contadorCarrinho.innerText = "0";
         return;
@@ -142,7 +171,6 @@ async function finalizarCompraDoCarrinho() {
     const emailCliente = prompt("Por favor, informe o seu e-mail para receber o produto pós-pagamento:");
     if (!emailCliente) return;
 
-    // Validação Regex básica de formato de e-mail
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(emailCliente.trim())) {
         alert("Por favor, insira um endereço de e-mail válido.");
@@ -152,11 +180,10 @@ async function finalizarCompraDoCarrinho() {
     const btnFinalizar = document.querySelector('.btn-finalize-cart');
     if (btnFinalizar) {
         btnFinalizar.disabled = true;
-        btnFinalizar.innerHTML = `<i class=\"fa-solid fa-spinner fa-spin\"></i> Gerando Pix Mercado Pago...`;
+        btnFinalizar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Gerando Pix Mercado Pago...`;
     }
 
     try {
-        // Envia a lista inteira do carrinho para o backend
         const resposta = await fetch('/api/criar-pagamento', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -184,9 +211,23 @@ async function finalizarCompraDoCarrinho() {
     } finally {
         if (btnFinalizar) {
             btnFinalizar.disabled = false;
-            btnFinalizar.innerHTML = `<i class=\"fa-solid fa-bolt\"></i> Finalizar Compra via PIX`;
+            btnFinalizar.innerHTML = `<i class="fa-solid fa-bolt"></i> Finalizar Compra via PIX`;
         }
     }
 }
 
-atualizarInterfaceCarrinho();
+// --- GATILHOS DE INICIALIZAÇÃO CORRIGIDOS ---
+document.addEventListener("DOMContentLoaded", () => {
+    renderizarCatalogo();
+    atualizarInterfaceCarrinho();
+    
+    // Garante que a tela de catálogo comece visível com as animações do CSS
+    const catalogo = document.getElementById('catalog-view');
+    if (catalogo) {
+        catalogo.style.display = 'grid';
+        setTimeout(() => {
+            catalogo.style.opacity = '1';
+            catalogo.style.transform = 'translateY(0)';
+        }, 50);
+    }
+});
