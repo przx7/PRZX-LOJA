@@ -1,4 +1,4 @@
-// Banco de dados simulado dos produtos gamers
+// Banco de dados simulado dos produtos gamers com as imagens originais
 const produtosDB = {
     1: { nome: "Prod 1", valor: "R$ 1,00", estoque: 12, desc: "Acesso Vitalício ao Pacote de Skins Raras. Entrega imediata via bot.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
     2: { nome: "Prod 2", valor: "R$ 25,00", estoque: 5, desc: "Chave de Ativação Global para Steam. Código Premium de automação.", imagem: "https://cdn.discordapp.com/attachments/1119747596041003010/1138241416399372338/standard_1.gif" },
@@ -14,12 +14,12 @@ const produtosDB = {
 
 let carrinho = [];
 
-// FUNÇÃO PARA RENDERIZAR OS PRODUTOS NA TELA DO CATÁLOGO
+// Renderiza os cards do catálogo na tela
 function renderizarCatalogo() {
     const catalogoContainer = document.getElementById('catalog-view');
     if (!catalogoContainer) return;
 
-    catalogoContainer.innerHTML = ''; // Limpa antes de renderizar
+    catalogoContainer.innerHTML = '';
 
     for (const id in produtosDB) {
         const produto = produtosDB[id];
@@ -43,6 +43,7 @@ function renderizarCatalogo() {
     }
 }
 
+// Controla a transição de telas (Catálogo <=> Carrinho)
 function alternarTela(telaAlvo) {
     const catalogo = document.getElementById('catalog-view');
     const visualizacaoCarrinho = document.getElementById('cart-view');
@@ -72,6 +73,7 @@ function alternarTela(telaAlvo) {
     }
 }
 
+// Adiciona itens ao carrinho de compras
 function adicionarAoCarrinho(idProduto) {
     const produtoInfo = produtosDB[idProduto];
     if (!produtoInfo) return;
@@ -96,8 +98,9 @@ function adicionarAoCarrinho(idProduto) {
     atualizarInterfaceCarrinho();
 }
 
+// Modifica as quantidades dentro da página do carrinho
 function alterarQuantidadeItem(idProduto, mudanca) {
-    const item = Math.max ? carrinho.find(i => i.id === idProduto) : null;
+    const item = carrinho.find(i => i.id === idProduto);
     if (!item) return;
 
     const produtoOriginal = produtosDB[idProduto];
@@ -116,6 +119,7 @@ function alterarQuantidadeItem(idProduto, mudanca) {
     atualizarInterfaceCarrinho();
 }
 
+// Atualiza os contadores e textos do carrinho
 function atualizarInterfaceCarrinho() {
     const containerItens = document.getElementById('cart-items-list');
     const elementoPrecoTotal = document.getElementById('cart-total-price');
@@ -162,6 +166,7 @@ function atualizarInterfaceCarrinho() {
     if (contadorCarrinho) contadorCarrinho.innerText = totalItens;
 }
 
+// Envia a requisição do checkout para a API backend
 async function finalizarCompraDoCarrinho() {
     if (carrinho.length === 0) {
         alert("O seu carrinho está vazio.");
@@ -216,12 +221,11 @@ async function finalizarCompraDoCarrinho() {
     }
 }
 
-// --- GATILHOS DE INICIALIZAÇÃO CORRIGIDOS ---
+// Executa assim que a estrutura da página termina de carregar
 document.addEventListener("DOMContentLoaded", () => {
     renderizarCatalogo();
     atualizarInterfaceCarrinho();
     
-    // Garante que a tela de catálogo comece visível com as animações do CSS
     const catalogo = document.getElementById('catalog-view');
     if (catalogo) {
         catalogo.style.display = 'grid';
