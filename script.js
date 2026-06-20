@@ -14,7 +14,7 @@ const produtosDB = {
 
 let carrinho = [];
 
-// Renderiza os cards do catálogo na tela
+// Função para renderizar os cards do catálogo na tela
 function renderizarCatalogo() {
     const catalogoContainer = document.getElementById('catalog-view');
     if (!catalogoContainer) return;
@@ -48,6 +48,8 @@ function alternarTela(telaAlvo) {
     const catalogo = document.getElementById('catalog-view');
     const visualizacaoCarrinho = document.getElementById('cart-view');
 
+    if (!catalogo || !visualizacaoCarrinho) return;
+
     if (telaAlvo === 'cart') {
         catalogo.style.opacity = '0';
         catalogo.style.transform = 'translateY(15px)';
@@ -78,7 +80,7 @@ function adicionarAoCarrinho(idProduto) {
     const produtoInfo = produtosDB[idProduto];
     if (!produtoInfo) return;
 
-    const itemExistente = carrinho.find(item => item.id === idProduto);
+    const itemExistente = carrinho.find(item => item.id === parseInt(idProduto));
 
     if (itemExistente) {
         if (itemExistente.quantidade >= produtoInfo.estoque) {
@@ -88,7 +90,7 @@ function adicionarAoCarrinho(idProduto) {
         itemExistente.quantidade++;
     } else {
         carrinho.push({
-            id: idProduto,
+            id: parseInt(idProduto),
             nome: produtoInfo.nome,
             valor: parseFloat(produtoInfo.valor.replace("R$ ", "").replace(",", ".")),
             quantidade: 1
@@ -100,7 +102,7 @@ function adicionarAoCarrinho(idProduto) {
 
 // Modifica as quantidades dentro da página do carrinho
 function alterarQuantidadeItem(idProduto, mudanca) {
-    const item = carrinho.find(i => i.id === idProduto);
+    const item = carrinho.find(i => i.id === parseInt(idProduto));
     if (!item) return;
 
     const produtoOriginal = produtosDB[idProduto];
@@ -113,7 +115,7 @@ function alterarQuantidadeItem(idProduto, mudanca) {
     item.quantidade += mudanca;
 
     if (item.quantidade <= 0) {
-        carrinho = carrinho.filter(i => i.id !== idProduto);
+        carrinho = carrinho.filter(i => i.id !== parseInt(idProduto));
     }
 
     atualizarInterfaceCarrinho();
@@ -133,7 +135,7 @@ function atualizarInterfaceCarrinho() {
 
     if (carrinho.length === 0) {
         containerItens.innerHTML = `<div class="cart-empty-msg"><i class="fa-solid fa-basket-shopping" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>Seu carrinho está vazio. Adicione produtos do catálogo!</div>`;
-        elementoPrecoTotal.innerText = "R$ 0,00";
+        if (elementoPrecoTotal) elementoPrecoTotal.innerText = "R$ 0,00";
         if (contadorCarrinho) contadorCarrinho.innerText = "0";
         return;
     }
@@ -162,7 +164,7 @@ function atualizarInterfaceCarrinho() {
         containerItens.appendChild(elementoItem);
     });
 
-    elementoPrecoTotal.innerText = `R$ ${totalAcumulado.toFixed(2).replace('.', ',')}`;
+    if (elementoPrecoTotal) elementoPrecoTotal.innerText = `R$ ${totalAcumulado.toFixed(2).replace('.', ',')}`;
     if (contadorCarrinho) contadorCarrinho.innerText = totalItens;
 }
 
@@ -221,17 +223,19 @@ async function finalizarCompraDoCarrinho() {
     }
 }
 
-// Executa assim que a estrutura da página termina de carregar
-document.addEventListener("DOMContentLoaded", () => {
-    renderizarCatalogo();
-    atualizarInterfaceCarrinho();
-    
+// Inicialização imediata das funções e correção da visibilidade inicial do CSS
+renderizarCatalogo();
+atualizarInterfaceCarrinho();
+
+const inicializarEstilos = () => {
     const catalogo = document.getElementById('catalog-view');
     if (catalogo) {
         catalogo.style.display = 'grid';
-        setTimeout(() => {
-            catalogo.style.opacity = '1';
-            catalogo.style.transform = 'translateY(0)';
-        }, 50);
+        catalogo.style.opacity = '1';
+        catalogo.style.transform = 'translateY(0)';
     }
-});
+};
+
+// Executa imediatamente e também se garante no carregamento do DOM
+inicializarEstilos();
+document.addEventListener("DOMContentLoaded", inicializarEstilos);
