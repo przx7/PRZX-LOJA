@@ -1,7 +1,0 @@
-{
-  "name": "catalogo-przx-backend",
-  "version": "1.0.0",
-  "dependencies": {
-    "mercadopago": "^2.2.0"
-  }
-}
