@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STORE ONLINE BY PRZX.sh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos básicos para o modal do PIX */
+        .pix-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            align-items: center;
+            justify-content: center;
+        }
+        .pix-modal-content {
+            background-color: #111;
+            color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid #ff0000;
+            box-shadow: 0px 0px 15px rgba(255, 0, 0, 0.4);
+        }
+        .pix-modal h3 {
+            margin-top: 0;
+            color: #ff0000;
+        }
+        .qr-code-box {
+            background: #fff;
+            padding: 10px;
+            display: inline-block;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .qr-code-box img {
+            width: 200px;
+            height: 200px;
+            display: block;
+        }
+        .pix-input-group {
+            margin: 15px 0;
+        }
+        .pix-input-group textarea {
+            width: 100%;
+            height: 60px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 8px;
+            resize: none;
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+        .btn-pix {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        .btn-copy {
+            background-color: #ff0000;
+            color: #fff;
+        }
+        .btn-close-pix {
+            background-color: #222;
+            color: #bbb;
+            border: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="https://2no.co/1l54R.png" class="top-announcement">
+        STORE ONLINE DESENVOLVIDO POR PRZX.sh
+    </a>
+
+    <header>
+        <div class="logo" onclick="mostrarCatalogo()" style="cursor: pointer;">PRZX C0D3D</div>
+        
+        <div class="header-icons">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            
+            <a href="https://wa.me/5532999653512?text=Olá%20PRZX.sh!%20Preciso%20de%20suporte%20em%20relação%20ao%20Catálogo%20Online..." target="_blank" style="text-decoration: none;">
+                <i class="fa-solid fa-headphones"></i>
+            </a>
+            
+            <div class="cart-btn-header" onclick="mostrarCarrinho()">
+                <i class="fa-solid fa-basket-shopping"></i>
+                <span id="cart-counter">0</span>
+            </div>
+            
+            <a href="https://wa.me/5532999653512?text=Olá%20PRZX.sh!%20Tenho%20interesse%20em%20adquirir%20um%20Catálogo%20Online%20⭐" class="btn-copyright" target="_blank">Copyright</a>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div id="catalog-view">
+            
+            <div class="category-title">Subcategoria 1</div>
+            <div class="grid-row" id="row-1">
+                <div class="product-card" data-id="1">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 1">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 1</h3>
+                        <p class="product-price">R$ 1,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(1, 1); return false;">Ver</a>
+                    </div>
+                </div>
+                <div class="product-card" data-id="2">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 2">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 2</h3>
+                        <p class="product-price">R$ 25,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(2, 1); return false;">Ver</a>
+                    </div>
+                </div>
+                <div class="product-card" data-id="3">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 3">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 3</h3>
+                        <p class="product-price">R$ 50,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(3, 1); return false;">Ver</a>
+                    </div>
+                </div>
+            </div>
+            <div class="product-details-expansion" id="expansion-1"></div>
+
+            <hr class="line-separator">
+
+            <div class="category-title">Subcategoria 2</div>
+            <div class="grid-row" id="row-2">
+                <div class="product-card" data-id="4">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 4">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 4</h3>
+                        <p class="product-price">R$ 10,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(4, 2); return false;">Ver</a>
+                    </div>
+                </div>
+                <div class="product-card" data-id="5">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 5">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 5</h3>
+                        <p class="product-price">R$ 35,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(5, 2); return false;">Ver</a>
+                    </div>
+                </div>
+                <div class="product-card" data-id="6">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 6">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 6</h3>
+                        <p class="product-price">R$ 40,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(6, 2); return false;">Ver</a>
+                    </div>
+                </div>
+            </div>
+            <div class="product-details-expansion" id="expansion-2"></div>
+
+            <hr class="line-separator">
+
+            <div class="category-title">Subcategoria 3</div>
+            <div class="grid-row" id="row-3">
+                <div class="product-card" data-id="7">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 7">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 7</h3>
+                        <p class="product-price">R$ 90,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(7, 3); return false;">Ver</a>
+                    </div>
+                </div>
+                <div class="product-card" data-id="8">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 8">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 8</h3>
+                        <p class="product-price">R$ 120,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(8, 3); return false;">Ver</a>
+                    </div>
+                </div>
+                <div class="product-card" data-id="9">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 9">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 9</h3>
+                        <p class="product-price">R$ 15,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(9, 3); return false;">Ver</a>
+                    </div>
+                </div>
+            </div>
+            <div class="product-details-expansion" id="expansion-3"></div>
+
+            <hr class="line-separator">
+
+            <div class="category-title">Subcategoria 4</div>
+            <div class="grid-row" id="row-4">
+                <div class="product-card" data-id="10">
+                    <div class="product-image-wrapper">
+                        <img class="product-image" src="https://cdn.discordapp.com/attachments/998024954039779345/1517523369107656845/file_00000000b12061fdb373fada609b04a7.png?ex=6a369745&is=6a3545c5&hm=6869d3451d12c7097908970f68db771d94f3f694abefb3ba87384fcf4d010590&" alt="Produto 10">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">Prod 10</h3>
+                        <p class="product-price">R$ 65,00</p>
+                        <a href="#" class="btn-buy" onclick="abrirModal(10, 4); return false;">Ver</a>
+                    </div>
+                </div>
+            </div>
+            <div class="product-details-expansion" id="expansion-4"></div>
+        </div>
+
+        <div id="cart-view" style="display: none;">
+            <div class="category-title">Meu Carrinho</div>
+            
+            <div id="cart-items-container"></div>
+            
+            <div class="cart-summary">
+                <div class="cart-total">
+                    <span>Total do Pedido:</span>
+                    <span id="cart-total-price">R$ 0,00</span>
+                </div>
+                
+                <button id="btn-finalize-checkout" class="btn-expansion-buy btn-finalize-cart" onclick="finalizarCompraDoCarrinho()">
+                    <i class="fa-solid fa-bolt"></i> Finalizar Compra via PIX
+                </button>
+                
+                <button class="btn-expansion-add btn-continue-shopping" onclick="mostrarCatalogo()">
+                    Continuar Comprando
+                </button>
+            </div>
+        </div>
+
+    </div> 
+
+    <footer>
+        <div class="footer-brand">
+            <span class="footer-logo">BY PRZX ENCRYPTED</span>
+            <p class="footer-tagline">Desenvolvedor De Automações Inteligentes.</p>
+        </div>
+        <div class="footer-links">
+            <h4>Políticas</h4>
+            <a href="#">Termos de serviço</a>
+            <a href="#">Políticas de Cookies</a>
+        </div>
+        <div class="footer-socials">
+            <p>Confira nossas redes sociais</p>
+            <div class="social-icons">
+                <a href="#" target="_blank" class="social-btn"><i class="fa-brands fa-telegram"></i></a>
+                <a href="https://wa.me/5532999653512" target="_blank" class="social-btn"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="#" target="_blank" class="social-btn"><i class="fa-brands fa-discord"></i></a>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="footer-copyright">
+            <p>&copy; 2026 PRZX.sh & NexT Empreendimentos. Todos os direitos reservados.</p>
+            <p class="powered-by">Powered by <span>PRZX.sh</span></p>
+        </div>
+    </footer>
+
+    <div id="modal-pix" class="pix-modal" style="display: none;">
+        <div class="pix-modal-content">
+            <h3><i class="fa-solid fa-qrcode"></i> Pagamento via PIX</h3>
+            <p style="font-size: 14px; margin: 5px 0;">Escaneie o QR Code abaixo ou utilize o Copia e Cola:</p>
+            
+            <div class="qr-code-box">
+                <img id="modal-qr-img" src="" alt="Carregando QR Code...">
+            </div>
+            
+            <div class="pix-input-group">
+                <textarea id="modal-pix-text" readonly onclick="this.select()"></textarea>
+            </div>
+            
+            <button class="btn-pix btn-copy" onclick="copiarPixTexto()">
+                <i class="fa-solid fa-copy"></i> Copiar Código PIX
+            </button>
+            
+            <button class="btn-pix btn-close-pix" onclick="document.getElementById('modal-pix').style.display='none'">
+                Fechar Janela
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Função auxiliar para o botão de copiar o código PIX
+        function copiarPixTexto() {
+            const campoTexto = document.getElementById('modal-pix-text');
+            campoTexto.select();
+            campoTexto.setSelectionRange(0, 99999); // Mobile seguro
+            
+            navigator.clipboard.writeText(campoTexto.value)
+                .then(() => alert("Código PIX copiado com sucesso!"))
+                .catch(() => alert("Erro ao copiar automaticamente. Selecione o texto e copie manualmente."));
+        }
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
