@@ -223,19 +223,25 @@ async function finalizarCompraDoCarrinho() {
     }
 }
 
-// Inicialização imediata das funções e correção da visibilidade inicial do CSS
-renderizarCatalogo();
-atualizarInterfaceCarrinho();
-
-const inicializarEstilos = () => {
+// Função de inicialização forçada e segura
+function inicializarLojaCompleta() {
+    renderizarCatalogo();
+    atualizarInterfaceCarrinho();
+    
     const catalogo = document.getElementById('catalog-view');
     if (catalogo) {
         catalogo.style.display = 'grid';
-        catalogo.style.opacity = '1';
-        catalogo.style.transform = 'translateY(0)';
+        // Timeout de 100ms força o navegador a processar a animação do CSS
+        setTimeout(() => {
+            catalogo.style.opacity = '1';
+            catalogo.style.transform = 'translateY(0)';
+        }, 100);
     }
-};
+}
 
-// Executa imediatamente e também se garante no carregamento do DOM
-inicializarEstilos();
-document.addEventListener("DOMContentLoaded", inicializarEstilos);
+// Roda imediatamente e garante redundância no carregamento do DOM
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inicializarLojaCompleta);
+} else {
+    inicializarLojaCompleta();
+}
