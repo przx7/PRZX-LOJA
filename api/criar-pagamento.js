@@ -1,6 +1,5 @@
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 
-// O banco de dados fica no servidor. O cliente NÃO consegue alterar o preço.
 const produtosDB = {
     1: { nome: "Prod 1", preco: 1.00 },
     2: { nome: "Prod 2", preco: 25.00 },
@@ -15,36 +14,50 @@ const produtosDB = {
 };
 
 export default async function handler(req, res) {
-    // Segurança: Bloqueia se não for uma requisição POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Método não permitido' });
     }
 
     try {
-        const { produtoId, emailCliente } = req.body;
-        const produto = produtosDB[produtoId];
+        const { itens, emailCliente } = req.body;
 
-        if (!produto) {
-            return res.status(404).json({ error: 'Produto não encontrado' });
+        if (!itens || !Array.isArray(itens) || itens.length === 0) {
+            return res.status(400).json({ error: 'Nenhum item enviado no carrinho' });
         }
 
-        // Configura o Mercado Pago usando a Variável de Ambiente Segura da Vercel
+        let totalAmount = 0;
+        let descricoes = [];
+
+        // Calcula o preço final com segurança no servidor para todos os itens
+        for (const item of itens) {
+            const produto = produtosDB[item.id];
+            if (!produto) {
+                return res.status(404).json({ error: `Produto ID ${item.id} não encontrado` });
+            }
+            totalAmount += produto.preco * item.quantidade;
+            descricoes.push(`${item.quantidade}x ${produto.nome}`);
+        }
+
         const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
         const payment = new Payment(client);
 
+        // Identifica automaticamente o domínio atual na Vercel para montar a URL do webhook
+        const protocol = req.headers['x-forwarded-proto'] || 'https';
+        const host = req.headers['x-forwarded-host'] || req.headers.host;
+        const webhookUrl = `${protocol}://${host}/api/webhook-mercadopago`;
+
         const paymentData = {
             body: {
-                transaction_amount: produto.preco, // Preço real e blindado do servidor
-                description: `PRZX.sh - ${produto.nome}`,
+                transaction_amount: parseFloat(totalAmount.toFixed(2)),
+                description: `PRZX.sh - Compra: ${descricoes.join(', ')}`,
                 payment_method_id: 'pix',
-                payer: { email: emailCliente }
-                // Linha do notification_url removida temporariamente para testes
+                payer: { email: emailCliente },
+                notification_url: webhookUrl
             }
         };
 
         const response = await payment.create(paymentData);
 
-        // Retorna APENAS o necessário para o frontend. Chaves ficam ocultas.
         return res.status(200).json({
             id_pagamento: response.id,
             qr_code: response.point_of_interaction.transaction_data.qr_code,
@@ -53,6 +66,6 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Erro ao processar o PIX' });
+        return res.status(500).json({ error: 'Erro interno ao processar a ordem de pagamento' });
     }
 }
